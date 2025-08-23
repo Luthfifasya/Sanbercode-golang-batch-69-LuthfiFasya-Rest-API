@@ -1,36 +1,45 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
-
-	"github.com/gin-gonic/gin"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
 
 	"bioskop-app/controllers"
 	"bioskop-app/models"
 	"bioskop-app/routers"
+
+	"github.com/gin-gonic/gin"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
-func initDB() *gorm.DB {
+var DB *gorm.DB
+
+func initDB() {
 	dsn := os.Getenv("DATABASE_URL")
+	if dsn == "" {
+		log.Fatal("DATABASE_URL tidak ditemukan, cek Railway Variables")
+	}
+
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatalf("Gagal koneksi database: %v", err)
 	}
-	fmt.Println("Berhasil konek ke database!")
 
-	db.AutoMigrate(&models.Bioskop{})
-	return db
+	DB = db
+	DB.AutoMigrate(&models.Bioskop{})
 }
 
 func main() {
-	db := initDB()
-	controllers.SetDatabase(db)
+	initDB()
+	controllers.SetDB(DB)
 
 	r := gin.Default()
-	routers.BioskopRouter(r)
-	r.Run(":8080")
+	routers.SetupRoutes(r)
+
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+	r.Run(":" + port)
 }
