@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/postgres"
@@ -14,7 +15,7 @@ import (
 )
 
 func initDB() *gorm.DB {
-	dsn := "host=localhost user=postgres password=lightyagami321 dbname=bioskop_db port=5432 sslmode=disable"
+	dsn := os.Getenv("DATABASE_URL")
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatalf("Gagal koneksi database: %v", err)
