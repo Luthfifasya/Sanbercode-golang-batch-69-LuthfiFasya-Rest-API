@@ -7,9 +7,9 @@ import (
 )
 
 func SetupRoutes(r *gin.Engine) {
-	r.POST("/bioskop", controllers.CreateBioskop)
-	r.GET("/bioskop", controllers.GetBioskop)
-	r.GET("/bioskop/:id", controllers.GetBioskopByID)
-	r.PUT("/bioskop/:id", controllers.UpdateBioskop)
-	r.DELETE("/bioskop/:id", controllers.DeleteBioskop)
+	r.POST("/", controllers.CreateBioskop)
+	r.GET("/", controllers.GetBioskop)
+	r.GET("/:id", controllers.GetBioskopByID)
+	r.PUT("/:id", controllers.UpdateBioskop)
+	r.DELETE(":id", controllers.DeleteBioskop)
 }
